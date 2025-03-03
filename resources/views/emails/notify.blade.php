@@ -9,7 +9,7 @@
     </style>
 </head>
 <body>
-<h1>Email Notification</h1>
+<h1>New Game is available on Epic Game Store!</h1>
 <p>{{ $subject }}</p>
 <ul class="font-size">
     @foreach($messageArray as $key =>  $data)
