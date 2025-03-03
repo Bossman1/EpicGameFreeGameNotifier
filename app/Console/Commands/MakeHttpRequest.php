@@ -54,7 +54,7 @@ class MakeHttpRequest extends Command
             if ($data <= 0) {
                 $subject = 'Epic Games Free Game';
                 if (RecordGameInfo::create($dataArray)) {
-                    Mail::to('nikakharadze82@gmail.com')->send(new SendMail($subject, $dataArray));
+                    Mail::to(['nikakharadze82@gmail.com','nikakharadze@yahoo.com'])->send(new SendMail($subject, $dataArray));
                     $this->info("Request sent! Response: " . $response->status());
                 }
             } else {
