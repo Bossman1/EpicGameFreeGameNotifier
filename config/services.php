@@ -34,5 +34,12 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'vonage' => [
+        'key' => env('VONAGE_API_KEY'),
+        'secret' => env('VONAGE_API_SECRET'),
+        'sms_from' => env('VONAGE_SMS_FROM'),
+        'sms_to' => env('VONAGE_SMS_TO'),
+        'messages_api_url' => 'https://messages-sandbox.nexmo.com/v1/messages'
+    ],
 
 ];
