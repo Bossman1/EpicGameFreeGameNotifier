@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\SendMail;
 use App\Models\RecordGameInfo;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class MakeHttpRequest extends Command
 {
@@ -50,9 +52,12 @@ class MakeHttpRequest extends Command
             }
             $data = RecordGameInfo::where('game_id', $dataArray['game_id'])->count();
             if ($data <= 0) {
-                if (RecordGameInfo::create($dataArray)) {
-                    $this->info("Request sent! Response: " . $response->status());
-                }
+                $subject = 'Epic Games Free Game';
+                Mail::to('nikakharadze82@gmail.com')->send(new SendMail($subject, $dataArray));
+
+//                if (RecordGameInfo::create($dataArray)) {
+//                    $this->info("Request sent! Response: " . $response->status());
+//                }
             } else {
                 $this->info("Record already exist!");
             }
