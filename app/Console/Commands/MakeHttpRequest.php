@@ -43,15 +43,6 @@ class MakeHttpRequest extends Command
     public function handle()
     {
 
-// sms not working
-//        $status = $this->smsService->sendSms($phone, $message);
-//
-//        if ($status === '0') {
-//            $this->info("SMS sent successfully!");
-//        } else {
-//            $this->error("Failed to send SMS. Status: $status");
-//        }
-
 
         $url = 'https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions';
         $response = Http::get($url); // Use Http::post() if needed
@@ -78,21 +69,35 @@ class MakeHttpRequest extends Command
             if ($data <= 0) {
                 $subject = 'Epic Games Free Game';
                 if (RecordGameInfo::create($dataArray)) {
+//                if (true) {
                     // send mail notification
-                    Mail::to(['nikakharadze82@gmail.com', 'nikakharadze@yahoo.com'])->send(new SendMail($subject, $dataArray));
+                    Mail::to(['nikakharadze82@gmail.com', 'nelitabidze@gmail.com'])->send(new SendMail($subject, $dataArray));
 
 
-                    //WhatsApp api
+                    //WhatsApp api was not worked last time
+//                    $phone = config('services.vonage.sms_to');
+//                    $wsp_message = 'New Game in EpicGames Store: '.$dataArray['game_title'];
+//                    $wsp_image = $imageArray['images']['Thumbnail'];
+//                    $wsp_response = $this->vonageService->sendWhatsAppMessage($phone, $wsp_message, $wsp_image);
+//                    $statusMessage = response()->json($wsp_response)->getStatusCode();
+//                    if ($statusMessage == 200) {
+//                        $this->info("Request sent! Response: " . $response->status());
+//                    }else{
+//                        $this->info("Something went wrong!");
+//                    }
+
+
+                    //Sms api
                     $phone = config('services.vonage.sms_to');
-                    $wsp_message = 'New Game in EpicGames Store: '.$dataArray['game_title'];
-                    $wsp_image = $imageArray['images']['Thumbnail'];
-                    $wsp_response = $this->vonageService->sendWhatsAppMessage($phone, $wsp_message, $wsp_image);
-                    $statusMessage = response()->json($wsp_response)->getStatusCode();
-                    if ($statusMessage == 200) {
-                        $this->info("Request sent! Response: " . $response->status());
-                    }else{
-                        $this->info("Something went wrong!");
+                    $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
+                    $status = $this->smsService->sendSms($phone, $sms_message);
+                    if ($status === '0') {
+                        $this->info("SMS sent successfully!");
+                    } else {
+                        $this->error("Failed to send SMS. Status: $status");
                     }
+
+
                 }
             } else {
                 $this->info("Record already exist!");

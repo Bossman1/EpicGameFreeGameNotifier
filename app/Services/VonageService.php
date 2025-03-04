@@ -23,7 +23,7 @@ class VonageService
 
 
         $payload = [
-            "from" => config('services.vonage.sms_from'),
+            "from" => config('services.vonage.message_from'),
             "to" => $to,
             "channel" => "whatsapp",
         ];

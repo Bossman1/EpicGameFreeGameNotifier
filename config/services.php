@@ -39,6 +39,7 @@ return [
         'secret' => env('VONAGE_API_SECRET'),
         'sms_from' => env('VONAGE_SMS_FROM'),
         'sms_to' => env('VONAGE_SMS_TO'),
+        'message_from' => env('VONAGE_MESSAGE_FROM'),
         'messages_api_url' => 'https://messages-sandbox.nexmo.com/v1/messages'
     ],
 
