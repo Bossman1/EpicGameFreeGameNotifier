@@ -9,5 +9,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:epicgames')->everyTwoHours();
+Schedule::command('app:epicgames')->everyMinute();
 
