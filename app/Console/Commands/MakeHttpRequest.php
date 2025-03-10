@@ -6,7 +6,9 @@ use App\Mail\SendMail;
 use App\Models\RecordGameInfo;
 use App\Services\SmsService;
 use App\Services\VonageService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
@@ -48,30 +50,53 @@ class MakeHttpRequest extends Command
         $response = Http::get($url); // Use Http::post() if needed
         if ($response->status() == '200') {
             $data = $response->json();
-            $dataArray = [];
-            if (isset($data['data']['Catalog']['searchStore']['elements'][0])) {
-                $data = $data['data']['Catalog']['searchStore']['elements'][0];
-                $imageArray = [];
-                $dataArray['game_id'] = $data['id'] ?? null;
-                $dataArray['game_title'] = $data['title'] ?? null;
-                $dataArray['game_description'] = $data['description'] ?? null;
-                $dataArray['game_effective_date'] = $data['effectiveDate'] ?? null;
-                $dataArray['game_seller'] = $data['seller']['name'] ?? null;
-                $imageArray['images']['DieselStoreFrontWide'] = $data['keyImages'][1]['url'] ?? null;
-                $imageArray['images']['DieselStoreFrontTall'] = $data['keyImages'][0]['url'] ?? null;
-                $imageArray['images']['OfferImageTall'] = $data['keyImages'][2]['url'] ?? null;
-                $imageArray['images']['CodeRedemption_340x440'] = $data['keyImages'][4]['url'] ?? null;
-                $imageArray['images']['Thumbnail'] = $data['keyImages'][5]['url'] ?? null;
-                $imageJson = json_encode($imageArray['images']);
-                $dataArray = array_merge($dataArray, ['game_images' => $imageJson]);
+
+            $data = current(array_filter($data['data']['Catalog']['searchStore']['elements'] ?? [], function ($element) {
+                return !empty($element['promotions']['promotionalOffers'] ?? []);
+            })) ?: [];
+
+
+            // Build the basic game data using a shorthand array initialization.
+            $startDateString = data_get($data, 'promotions.promotionalOffers.0.promotionalOffers.0.startDate');
+            $endDateString = data_get($data, 'promotions.promotionalOffers.0.promotionalOffers.0.endDate');
+
+            $dataArray = [
+                'game_id' => $data['id'] ?? null,
+                'game_title' => $data['title'] ?? null,
+                'game_description' => $data['description'] ?? null,
+                'game_effective_date' => $data['effectiveDate'] ?? null,
+                'game_seller' => $data['seller']['name'] ?? null,
+                'game_offer_start' => $startDateString ? Carbon::parse($startDateString)->format('Y-m-d H:i:s') : null,
+                'game_offer_end' => $endDateString ? Carbon::parse($endDateString)->format('Y-m-d H:i:s') : null,
+            ];
+
+            $currentTime = Carbon::now();
+            $offerIsAvailable = false;
+            if ($dataArray['game_offer_start'] && $dataArray['game_offer_end']) {
+                $offerStart = Carbon::createFromFormat('Y-m-d H:i:s', $dataArray['game_offer_start']);
+                $offerEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dataArray['game_offer_end']);
+                if ($currentTime->between($offerStart, $offerEnd)) {
+                    $offerIsAvailable = true;
+                }
             }
-            $data = RecordGameInfo::where('game_id', $dataArray['game_id'])->count();
-            if ($data <= 0) {
+
+
+            // Loop through the mapping to build the images array.
+            $images = [];
+            foreach ($data['keyImages'] as $key => $index) {
+                $images[$index['type']] = $index['url'] ?? null;
+            }
+
+            // Merge the JSON encoded images into dataArray.
+            $dataArray['game_images'] = json_encode($images);
+
+            $count = RecordGameInfo::whereGameId($dataArray['game_id'])->count();
+
+            if ($count <= 0 && $offerIsAvailable) {
                 $subject = 'Epic Games Free Game';
                 if (RecordGameInfo::create($dataArray)) {
-//                if (true) {
                     // send mail notification
-                    Mail::to(['nikakharadze82@gmail.com', 'nelitabidze@gmail.com'])->send(new SendMail($subject, $dataArray));
+                    $mail = Mail::to(['nikakharadze82@gmail.com', 'nelitabidze@gmail.com'])->send(new SendMail($subject, $dataArray));
 
 
                     //WhatsApp api was not worked last time

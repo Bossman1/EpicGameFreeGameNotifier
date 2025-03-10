@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('game_effective_date');
             $table->string('game_seller');
             $table->json('game_images');
+            $table->dateTime('game_offer_start');
+            $table->dateTime('game_offer_end');
             $table->timestamps();
         });
     }
