@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\SendMail;
 use App\Models\RecordGameInfo;
 use App\Services\SmsService;
+use App\Services\TelegramService;
 use App\Services\VonageService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -24,12 +25,15 @@ class MakeHttpRequest extends Command
     protected SmsService $smsService;
     protected VonageService $vonageService;
 
+    protected TelegramService $telegramService;
 
-    public function __construct(SmsService $smsService, VonageService $vonageService)
+
+    public function __construct(SmsService $smsService, VonageService $vonageService, TelegramService $telegramService)
     {
         parent::__construct();
         $this->smsService = $smsService;
         $this->vonageService = $vonageService;
+        $this->telegramService = $telegramService;
     }
 
     /**
@@ -111,6 +115,14 @@ class MakeHttpRequest extends Command
 //                        $this->info("Something went wrong!");
 //                    }
 
+
+                    //send Telegram message
+                    try {
+                        $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
+                        $this->telegramService->sendTelegramMessage($sms_message,$images['Thumbnail'] );
+                    } catch (\Exception $e) {
+                        \Log::error('Telegram message send failed: ' . $e->getMessage());
+                    }
 
                     //Sms api
                     $phone = config('services.vonage.sms_to');

@@ -42,5 +42,10 @@ return [
         'message_from' => env('VONAGE_MESSAGE_FROM'),
         'messages_api_url' => 'https://messages-sandbox.nexmo.com/v1/messages'
     ],
+    'telegram' =>[
+        'token' => env('TELEGRAM_TOKEN'),
+        'chat_id' =>env('TELEGRAM_CHAT_ID'),
+        'web_url' =>env('TELEGRAM_WEB_URL'),
+    ]
 
 ];
