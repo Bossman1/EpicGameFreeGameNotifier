@@ -107,14 +107,18 @@ class MakeHttpRequest extends Command
                     }
 
                     //Send SMS message
-                    $recipients = explode(",", config('services.smsApi.gatewayapi.recipients'));
-                    $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
-                    $status = $this->smsService->sendSms($recipients, $sms_message);
-                    if (!is_null($status)) {
-                        $this->info("SMS sent successfully!");
-                    } else {
-                        $this->error("Failed to send SMS. Status: $status");
+                    $tursms = false;
+                    if ($tursms) {
+                        $recipients = explode(",", config('services.smsApi.gatewayapi.recipients'));
+                        $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
+                        $status = $this->smsService->sendSms($recipients, $sms_message);
+                        if (!is_null($status)) {
+                            $this->info("SMS sent successfully!");
+                        } else {
+                            $this->error("Failed to send SMS. Status: $status");
+                        }
                     }
+
                 }
             } else {
                 $this->info("Record already exist!");
