@@ -23,16 +23,14 @@ class MakeHttpRequest extends Command
     protected $signature = 'app:epicgames';
 
     protected SmsService $smsService;
-    protected VonageService $vonageService;
 
     protected TelegramService $telegramService;
 
 
-    public function __construct(SmsService $smsService, VonageService $vonageService, TelegramService $telegramService)
+    public function __construct(SmsService $smsService, TelegramService $telegramService)
     {
         parent::__construct();
         $this->smsService = $smsService;
-        $this->vonageService = $vonageService;
         $this->telegramService = $telegramService;
     }
 
@@ -102,39 +100,23 @@ class MakeHttpRequest extends Command
                     // send mail notification
                     $mail = Mail::to(['nikakharadze82@gmail.com', 'nelitabidze@gmail.com'])->send(new SendMail($subject, $dataArray));
 
-
-                    //WhatsApp api was not worked last time
-//                    $phone = config('services.vonage.sms_to');
-//                    $wsp_message = 'New Game in EpicGames Store: '.$dataArray['game_title'];
-//                    $wsp_image = $imageArray['images']['Thumbnail'];
-//                    $wsp_response = $this->vonageService->sendWhatsAppMessage($phone, $wsp_message, $wsp_image);
-//                    $statusMessage = response()->json($wsp_response)->getStatusCode();
-//                    if ($statusMessage == 200) {
-//                        $this->info("Request sent! Response: " . $response->status());
-//                    }else{
-//                        $this->info("Something went wrong!");
-//                    }
-
-
-                    //send Telegram message
+                    //Send Telegram message
                     try {
-                        $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
-                        $this->telegramService->sendTelegramMessage($sms_message,$images['Thumbnail'] );
+                        $sms_telegram_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
+                        $this->telegramService->sendTelegramMessage($sms_telegram_message, $images['Thumbnail']);
                     } catch (\Exception $e) {
                         \Log::error('Telegram message send failed: ' . $e->getMessage());
                     }
 
-                    //Sms api
-                    $phone = config('services.vonage.sms_to');
+                    //Send SMS message
+                    $recipients = explode(",", config('services.smsApi.gatewayapi.recipients'));
                     $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
-                    $status = $this->smsService->sendSms($phone, $sms_message);
-                    if ($status === '0') {
+                    $status = $this->smsService->sendSms($recipients, $sms_message);
+                    if (!is_null($status)) {
                         $this->info("SMS sent successfully!");
                     } else {
                         $this->error("Failed to send SMS. Status: $status");
                     }
-
-
                 }
             } else {
                 $this->info("Record already exist!");

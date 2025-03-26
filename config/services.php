@@ -34,18 +34,20 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    'vonage' => [
-        'key' => env('VONAGE_API_KEY'),
-        'secret' => env('VONAGE_API_SECRET'),
-        'sms_from' => env('VONAGE_SMS_FROM'),
-        'sms_to' => env('VONAGE_SMS_TO'),
-        'message_from' => env('VONAGE_MESSAGE_FROM'),
-        'messages_api_url' => 'https://messages-sandbox.nexmo.com/v1/messages'
+    'smsApi' => [
+
+        'gatewayapi' => [
+            'url' => env('GATEWAYAPI_URL'),
+            'token' => env('GATEWAYAPI_TOKEN'),
+            'recipients' => env('GATEWAYAPI_RECIPIENTS'),
+            'sender' => env('GATEWAYAPI_SENDER')
+        ]
+
     ],
-    'telegram' =>[
+    'telegram' => [
         'token' => env('TELEGRAM_TOKEN'),
-        'chat_id' =>env('TELEGRAM_CHAT_ID'),
-        'web_url' =>env('TELEGRAM_WEB_URL'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+        'web_url' => env('TELEGRAM_WEB_URL'),
     ]
 
 ];
