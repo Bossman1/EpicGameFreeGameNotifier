@@ -8,23 +8,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 
 class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $subject;
-    public $messageArray;
+    public $collections;
     /**
      * Create a new message instance.
      */
-    public function __construct($subject,$messageArray)
+    public function __construct($subject,$collections)
     {
         $this->subject = $subject;
-        $this->messageArray = $messageArray;
+        $this->collections = $collections;
 
-        return $this->from('mymail@gmail.com')
-            ->with(['messageArray' => $this->messageArray]);
     }
 
     /**
@@ -34,6 +33,7 @@ class SendMail extends Mailable
     {
         return new Envelope(
             subject: $this->subject,
+            from: "no-reply@example.com"
         );
     }
 
@@ -43,7 +43,7 @@ class SendMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.notify',
+            view: 'emails.notification',
         );
     }
 

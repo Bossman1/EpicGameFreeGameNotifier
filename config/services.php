@@ -40,7 +40,8 @@ return [
             'url' => env('GATEWAYAPI_URL'),
             'token' => env('GATEWAYAPI_TOKEN'),
             'recipients' => env('GATEWAYAPI_RECIPIENTS'),
-            'sender' => env('GATEWAYAPI_SENDER')
+            'sender' => env('GATEWAYAPI_SENDER'),
+            'active' => env('SMS_ALERT','false')
         ]
 
     ],
@@ -48,6 +49,10 @@ return [
         'token' => env('TELEGRAM_TOKEN'),
         'chat_id' => env('TELEGRAM_CHAT_ID'),
         'web_url' => env('TELEGRAM_WEB_URL'),
+        'active' => env('TELEGRAM_ALERT','false')
+    ],
+    'email' => [
+        'active' => env('EMAIL_ALERT','false')
     ]
 
 ];
