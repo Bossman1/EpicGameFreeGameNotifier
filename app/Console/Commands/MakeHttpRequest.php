@@ -95,19 +95,26 @@ class MakeHttpRequest extends Command
             if ($count <= 0 && $offerIsAvailable) {
                 $subject = 'Epic Games Free Game';
                 if (RecordGameInfo::create($dataArray)) {
+                    
                     // send mail notification
                     $mail = Mail::to(['nikakharadze82@gmail.com', 'nelitabidze@gmail.com'])->send(new SendMail($subject, $dataArray));
+                    if ($mail) {
+                        $this->info("Email sent successfully!");
+                    } else {
+                        $this->error("Email sent failure!");
+                    }
 
                     //Send Telegram message
                     try {
                         $sms_telegram_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
                         $this->telegramService->sendTelegramMessage($sms_telegram_message, $images['Thumbnail']);
+                        $this->info("Telegram message sent successfully!");
                     } catch (\Exception $e) {
                         \Log::error('Telegram message send failed: ' . $e->getMessage());
                     }
 
                     //Send SMS message
-                    $tursms = false;
+                    $tursms = true;
                     if ($tursms) {
                         $recipients = explode(",", config('services.smsApi.gatewayapi.recipients'));
                         $sms_message = 'New Game in EpicGames Store: ' . $dataArray['game_title'];
@@ -118,7 +125,7 @@ class MakeHttpRequest extends Command
                             $this->error("Failed to send SMS. Status: $status");
                         }
                     }
-
+                    $this->info("Done!");
                 }
             } else {
                 $this->info("Record already exist!");
