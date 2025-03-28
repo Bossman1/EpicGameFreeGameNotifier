@@ -52,6 +52,7 @@ return [
         'active' => env('TELEGRAM_ALERT','false')
     ],
     'email' => [
+        'recipients' => env('EMAIL_RECIPIENTS',''),
         'active' => env('EMAIL_ALERT','false')
     ]
 

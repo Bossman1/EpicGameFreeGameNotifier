@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RecordGameInfo extends Model
+class EpicGame extends Model
 {
     protected $fillable = [
         'game_title',
