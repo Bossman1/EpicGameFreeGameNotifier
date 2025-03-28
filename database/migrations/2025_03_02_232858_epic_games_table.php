@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('record_game_infos', function (Blueprint $table) {
+        Schema::create('epic_games', function (Blueprint $table) {
             $table->id();
             $table->string('game_id');
             $table->string('game_title');
