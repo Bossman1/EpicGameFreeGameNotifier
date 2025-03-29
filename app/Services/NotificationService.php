@@ -50,10 +50,10 @@ class NotificationService
      * @param $image
      * @return void
      */
-    public function sendTelegramMessage($message, $image = null): void
+    public function sendTelegramMessage($message, $image = null, $parse_mode = null): void
     {
         try {
-            $this->telegramService->sendTelegramMessage($message, $image);
+            $this->telegramService->sendTelegramMessage($message, $image, $parse_mode);
             Log::info("Telegram message sent successfully!");
         } catch (\Exception $e) {
             Log::error('Telegram message send failed: ' . $e->getMessage());

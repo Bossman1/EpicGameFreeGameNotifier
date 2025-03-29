@@ -21,13 +21,28 @@ class TelegramService
         $this->weburl = config('services.telegram.web_url');
     }
 
-    public function sendTelegramMessage($message, $photo = null)
+    public function sendTelegramMessage($message, $photo = null, $parse_mode = 'Markdown')
     {
         $endpint = !is_null($photo) ? 'sendPhoto' : 'sendMessage';
         $payload = [
                 "chat_id" => $this->chatId,
-            ] + ($photo ? ['photo' => $photo, 'caption' => $message, 'parse_mode' => 'Markdown'] : ['text' => $message]);
-        $response = Http::post($this->chatUrl . $endpint, $payload);
-        return $response;
+                'parse_mode' => $parse_mode,
+            ] + ($photo ? ['photo' => $photo, 'caption' => $message] : ['text' => $message]);
+
+
+        try {
+            $response = Http::post($this->chatUrl . $endpint, $payload);
+            if ($response->successful()) {
+                return $response;
+                \Log::info('Request successful');
+            } else {
+                \Log::error('Request failed with status: ' . $response->status());
+            }
+        } catch (\Exception $e) {
+            \Log::error("Error occurred while making HTTP request: " . $e->getMessage());
+        }
+
+
+        return false;
     }
 }
