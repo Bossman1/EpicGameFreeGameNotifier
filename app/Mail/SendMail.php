@@ -16,14 +16,15 @@ class SendMail extends Mailable
 
     public $subject;
     public $collections;
+    public $template_name;
     /**
      * Create a new message instance.
      */
-    public function __construct($subject,$collections)
+    public function __construct($subject,$collections, $template_name = 'notification')
     {
         $this->subject = $subject;
         $this->collections = $collections;
-
+        $this->template_name = $template_name;
     }
 
     /**
@@ -42,8 +43,9 @@ class SendMail extends Mailable
      */
     public function content(): Content
     {
+
         return new Content(
-            view: 'emails.notification',
+            view: 'emails.'.$this->template_name,
         );
     }
 

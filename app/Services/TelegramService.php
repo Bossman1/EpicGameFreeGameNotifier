@@ -23,6 +23,7 @@ class TelegramService
 
     public function sendTelegramMessage($message, $photo = null, $parse_mode = 'Markdown')
     {
+
         $endpint = !is_null($photo) ? 'sendPhoto' : 'sendMessage';
         $payload = [
                 "chat_id" => $this->chatId,
@@ -36,10 +37,10 @@ class TelegramService
                 return $response;
                 \Log::info('Request successful');
             } else {
-                \Log::error('Request failed with status: ' . $response->status());
+                \Log::error('Telegram message Request failed with status: ' . $response->status());
             }
         } catch (\Exception $e) {
-            \Log::error("Error occurred while making HTTP request: " . $e->getMessage());
+            \Log::error("Telegram message Error occurred while making HTTP request: " . $e->getMessage());
         }
 
 

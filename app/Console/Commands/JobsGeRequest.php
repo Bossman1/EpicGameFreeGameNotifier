@@ -107,7 +107,7 @@ class JobsGeRequest extends Command
         // Send notifications if active
 //        $this->sendNotificationIfActive($sms_active, 'sms', $this->subject, $this->dataObject);
         $this->sendNotificationIfActive($telegram_active, 'telegram', $this->subject, $this->dataObject);
-//        $this->sendNotificationIfActive($email_active, 'email', $this->subject, $this->dataObject);
+        $this->sendNotificationIfActive($email_active, 'email', $this->subject, $this->dataObject);
     }
 
     private function sendNotificationIfActive($isActive, $channel, $subject, $data): void
@@ -126,7 +126,7 @@ class JobsGeRequest extends Command
                     $this->info("Telegram message sent successfully!");
                     break;
                 case 'email':
-                    $this->notificationService->sendMail($subject, $data);
+                    $this->notificationService->sendMail($subject, $data, 'jobsge_notifications');
                     $this->info("Email sent successfully!");
                     break;
             }
