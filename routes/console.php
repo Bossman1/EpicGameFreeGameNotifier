@@ -9,6 +9,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:epicgames')->hourly();
-Schedule::command('app:jobsge')->everyFourHours();
+Schedule::command('app:epicgames')->everyFourHours();
+Schedule::command('app:jobsge')->everyThreeHours();
 
