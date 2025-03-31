@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\SendMail;
 use App\Models\EpicGame;
+use App\Services\MessageService;
 use App\Services\NotificationService;
 use App\Services\SmsService;
 use App\Services\TelegramService;
@@ -156,7 +157,8 @@ class EpicGamesRequest extends Command
         try {
             switch ($channel) {
                 case 'sms':
-                    $this->notificationService->sendSms($subject, $data);
+                    $message = MessageService::generateSmsMessageForEpicGames($this->dataObject);
+                    $this->notificationService->sendSms($subject."\n".$message);
                     $this->info("SMS sent successfully!");
                     break;
                 case 'telegram':

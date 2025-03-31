@@ -66,15 +66,9 @@ class NotificationService
         }
     }
 
-    public function sendSms($subject, $data)
+    public function sendSms($message)
     {
         $recipients = explode(",", config('services.smsApi.gatewayapi.recipients'));
-        $message = $subject . ":\n";
-
-        foreach ($data as $obj) {
-            $message .= "Title: {$obj['game_title']} \n";
-        }
-
         try {
             $status = $this->smsService->sendSms($recipients, $message);
             if (!is_null($status)) {

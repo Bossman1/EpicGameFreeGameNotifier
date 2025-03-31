@@ -5,7 +5,7 @@ namespace App\Services;
 class MessageService
 {
 
-    public static function generateTelegramMessage($dataObject)
+    public static function generateTelegramMessageForJobsge($dataObject)
     {
 
         $message = "New Job:\n\n";
@@ -23,6 +23,28 @@ class MessageService
     }
 
 
+    public static function generateSmsMessageForJobsge($dataObject)
+    {
+        $text = null;
+        if (!empty($dataObject) && is_array($dataObject)) {
+            $text .= "";
+        }
+        foreach ($dataObject as $message) {
+            $text .= "Position: {$message['position']}\nJob Page: {$message['link']}\n\n";
+        }
+        return $text;
+    }
+
+    public static function generateSmsMessageForEpicGames($messageData): ?string
+    {
+        $test = null;
+        if (!empty($messageData) && is_array($messageData)) {
+            foreach ($messageData as $message) {
+                $test .= "Title: {$message['game_title']} \n";
+            }
+        }
+        return $test;
+    }
 
 
 }

@@ -105,7 +105,7 @@ class JobsGeRequest extends Command
         $email_active = config('services.email.active');
 
         // Send notifications if active
-//        $this->sendNotificationIfActive($sms_active, 'sms', $this->subject, $this->dataObject);
+        $this->sendNotificationIfActive($sms_active, 'sms', $this->subject, $this->dataObject);
         $this->sendNotificationIfActive($telegram_active, 'telegram', $this->subject, $this->dataObject);
         $this->sendNotificationIfActive($email_active, 'email', $this->subject, $this->dataObject);
     }
@@ -117,11 +117,12 @@ class JobsGeRequest extends Command
         try {
             switch ($channel) {
                 case 'sms':
-                    $this->notificationService->sendSms($subject, $data);
+                    $message = MessageService::generateSmsMessageForJobsge($this->dataObject);
+                    $this->notificationService->sendSms($subject."\n".$message);
                     $this->info("SMS sent successfully!");
                     break;
                 case 'telegram':
-                    $message = MessageService::generateTelegramMessage($this->dataObject);
+                    $message = MessageService::generateTelegramMessageForJobsge($this->dataObject);
                     $this->notificationService->sendTelegramMessage($message, null, 'HTML');
                     $this->info("Telegram message sent successfully!");
                     break;
