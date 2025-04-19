@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('game_id');
             $table->string('game_title');
-            $table->string('game_description');
+            $table->longText('game_description');
             $table->string('game_effective_date');
             $table->string('game_seller');
             $table->json('game_images');
