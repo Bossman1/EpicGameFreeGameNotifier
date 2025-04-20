@@ -11,5 +11,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('app:epicgames')->everyFourHours();
 Schedule::command('app:jobsge')->everyThreeHours();
-Schedule::command('app:eft')->daily();
+//Schedule::command('app:eft')->daily(); //linode ip is blocked
 
