@@ -22,6 +22,21 @@ class MessageService
 
     }
 
+    public static function generateTelegramMessageForEft($dataObject)
+    {
+
+        $message = "EFT Price change is detected:\n\n";
+        foreach ($dataObject as $data) {
+            foreach ($data as $key =>  $package) {
+                $label  = str_replace('_',' ',ucfirst($key));
+                $message .=  "$label : $package \n";
+            }
+            $message .= "\n\n";
+        }
+        return $message;
+
+    }
+
 
     public static function generateSmsMessageForJobsge($dataObject)
     {
